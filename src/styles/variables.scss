@@ -1,0 +1,46 @@
+// ============================================================
+// 全局 SCSS 变量定义
+// 通过 vite.config.js additionalData 自动注入，无需手动 @import
+// ============================================================
+
+// ---------- 主题色 ----------
+$primary-color: #075E54;                              // WhatsApp 深绿（顶部导航栏）
+$primary-light: #128C7E;                              // 稍浅绿（hover、激活态）
+$user-bubble-bg: #DCF8C6;                             // 用户消息气泡背景（绿色）
+$user-bubble-text: #111B21;                           // 用户消息文字颜色
+$assistant-card-bg: #FFFFFF;                          // 助手回复卡片背景
+$assistant-card-shadow: 0 1px 2px rgba(0,0,0,0.13);  // 助手卡片阴影
+
+// ---------- 背景色 ----------
+$chat-bg: #ECE5DD;         // 聊天区背景（WhatsApp 米色）
+$header-bg: #f8f8f8;       // 顶部导航栏背景
+$input-bar-bg: #F0F0F0;    // 底部输入栏背景
+
+// ---------- 文字颜色 ----------
+$text-primary: #111B21;    // 主要文字
+$text-secondary: #667781;  // 次要文字（说明、描述）
+$text-timestamp: #667781;  // 时间戳颜色
+
+// ---------- 拒答区域 ----------
+$fallback-text-color: #86909C;  // 拒答文字颜色
+$fallback-bg: #FFF7E6;          // 拒答区域背景色（橙黄暖色）
+
+// ---------- 状态进度条 ----------
+$progress-step-active: #128C7E;  // 当前进行中步骤颜色
+$progress-step-done: #25D366;    // 已完成步骤颜色（WhatsApp 亮绿）
+
+// ---------- 间距 ----------
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// ---------- 圆角 ----------
+$radius-bubble: 8px;   // 消息气泡圆角
+$radius-card: 8px;     // 卡片圆角
+$radius-input: 20px;   // 输入框圆角
+
+// ---------- 响应式断点 ----------
+$breakpoint-mobile: 768px;   // 移动端断点
+$breakpoint-tablet: 1024px;  // 平板端断点
