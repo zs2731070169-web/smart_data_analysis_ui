@@ -19,6 +19,13 @@ export const useChatStore = defineStore('chat', () => {
   /** 当前 SSE AbortController，用于中断请求 */
   const abortController = ref(null)
 
+  /**
+   * 当前会话 id
+   * 首次请求为空字符串，后端通过响应头 x-session-id 下发后由前端记录并回传；
+   * 清空对话时重置。
+   */
+  const sessionId = ref('')
+
   // ==================== 计算属性 ====================
 
   /** 是否存在历史消息 */
@@ -94,8 +101,15 @@ export const useChatStore = defineStore('chat', () => {
 
     isStreaming.value = true
 
-    // 4. 启动 SSE 请求
+    // 4. 启动 SSE 请求（携带当前会话 id，首次为空字符串）
     abortController.value = sendQuestion(question, {
+      /**
+       * 会话 id 回调：保存后端下发的 sessionId，后续请求回传
+       */
+      onSession(id) {
+        if (id) sessionId.value = id
+      },
+
       /**
        * 进度文本回调：追加步骤，将上一步标记为完成
        */
@@ -155,7 +169,7 @@ export const useChatStore = defineStore('chat', () => {
         lastMsg.timestamp = dayjs().format('HH:mm')
         abortController.value = null
       },
-    })
+    }, { session: sessionId.value })
   }
 
   /**
@@ -184,6 +198,8 @@ export const useChatStore = defineStore('chat', () => {
   function clearMessages() {
     stopStreaming()
     messages.value = []
+    // 清空对话同时重置会话 id，开启新一轮会话
+    sessionId.value = ''
   }
 
   return {
@@ -191,6 +207,7 @@ export const useChatStore = defineStore('chat', () => {
     messages,
     isStreaming,
     hasMessages,
+    sessionId,
     // 操作
     sendMessage,
     stopStreaming,

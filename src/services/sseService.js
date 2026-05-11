@@ -53,12 +53,17 @@ function isProgressText(text) {
  * @param {Function} callbacks.onProgress  - 进度文本回调(text: string)
  * @param {Function} callbacks.onOutput    - 数据输出回调(data: Array<Object>)
  * @param {Function} callbacks.onFallback  - 拒答/错误文本回调(text: string)
+ * @param {Function} callbacks.onSession   - 会话 id 回调(sessionId: string)，
+ *                                            从响应头 x-session-id 解析
  * @param {Function} callbacks.onComplete  - 流结束回调
  * @param {Function} callbacks.onError     - 错误回调(errMsg: string)
+ * @param {Object}   [options]
+ * @param {string}   [options.session]     - 会话 id；首次为空字符串，后续回传后端下发的值
  * @returns {AbortController} 可调用 .abort() 中断请求
  */
-export function sendQuestion(question, callbacks) {
+export function sendQuestion(question, callbacks, options = {}) {
   const controller = new AbortController()
+  const session = options.session ?? ''
 
   const fetchSSE = async () => {
     try {
@@ -70,13 +75,19 @@ export function sendQuestion(question, callbacks) {
             'Content-Type': 'application/json; charset=utf-8',
             Accept: 'text/event-stream',
           },
-          body: JSON.stringify({ question }),
+          body: JSON.stringify({ question, session }),
           signal: controller.signal,
         }
       )
 
       if (!response.ok) {
         throw new Error(`HTTP 错误：${response.status} ${response.statusText}`)
+      }
+
+      // 后端在响应头 x-session-id 下发会话 id，首条请求后由前端记录回传
+      const sessionId = response.headers.get('x-session-id')
+      if (sessionId) {
+        callbacks.onSession?.(sessionId)
       }
 
       const reader = response.body.getReader()
